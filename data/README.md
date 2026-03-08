@@ -21,4 +21,3 @@ All raw scans are stored as 2-column CSV files:
 - nominal sweep rate (if known from notes),
 - scan direction (if encoded in filename).
 
-If you rename files, update `metadata.csv` accordingly.
