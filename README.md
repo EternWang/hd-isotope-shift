@@ -52,7 +52,5 @@ Automated two-Gaussian fitting of **partially overlapping doublets** can be sens
 
 The script `fit_from_raw.py` provides a starting point. For publication-quality reproducibility, it is recommended to specify a per-file time window in `analysis/windows.yaml`.
 
-## Notes on sharing course materials
-This repo **does not include the UCSB course lab manual PDF**, because it is copyrighted course material.  
 
 
