@@ -24,3 +24,5 @@ __pycache__/
 # Results
 results/*.png
 results/*.pdf
+!results/day4_shift_summary.png
+!results/day4_uncertainty_breakdown.png

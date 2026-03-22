@@ -1,23 +1,25 @@
 # Data
 
-All raw scans are stored as 2-column CSV files:
+All raw scans are stored as two-column CSV files:
 
-1. **time** (seconds)  
-2. **detector signal** (volts)
+1. time in seconds
+2. detector signal in volts
 
 ## Folder meaning
-- `hg/day1/`, `hg/day2/`  
-  Mercury lamp scans used to calibrate the scan-rate \(\beta = d\lambda/dt\).
-- `hd/day3_old_lamp/`  
-  Mixed H–D lamp (old lamp). Lower SNR / more ambiguous peak heights. Used as a control dataset.
-- `hd/day4_new_lamp/`  
-  Mixed H–D lamp (new lamp). Four repeated scans around Hα and Hβ used for final results.
+
+- `hg/day1/`, `hg/day2/`
+  Mercury lamp scans used to calibrate the scan rate `beta = d lambda / dt`.
+- `hd/day3_old_lamp/`
+  Mixed H-D lamp scans from the older lamp, kept as a lower-SNR comparison set.
+- `hd/day4_new_lamp/`
+  Mixed H-D lamp scans from the new lamp. These are the repeated measurements used for the final Day 4 results.
 
 ## Metadata
-`metadata.csv` provides one row per file and includes:
-- day label,
-- lamp type,
-- spectral region (Hα / Hβ / etc.),
-- nominal sweep rate (if known from notes),
-- scan direction (if encoded in filename).
 
+`metadata.csv` stores one row per file and records:
+
+- day label
+- lamp type
+- spectral region
+- nominal sweep rate, when available from notes
+- scan direction, when encoded in the filename

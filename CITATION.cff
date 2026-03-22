@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it."
-title: "Hydrogen–Deuterium Isotope Shift in the Balmer Series (Scanning Monochromator)"
+title: "Hydrogen-Deuterium Isotope Shift in the Balmer Series (Scanning Monochromator)"
 authors:
   - family-names: Wang
     given-names: Hongyu

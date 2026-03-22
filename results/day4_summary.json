@@ -24,6 +24,7 @@
   },
   "outputs": {
     "Halpha": {
+      "line_label": "H alpha",
       "trial_mean_A": 1.8069000000000002,
       "trial_sample_std_A": 0.008056053624449151,
       "trial_SEM_A": 0.0040280268122245754,
@@ -33,6 +34,7 @@
       "percent_difference_%": 0.851159144361064
     },
     "Hbeta": {
+      "line_label": "H beta",
       "trial_mean_A": 1.2705000000000002,
       "trial_sample_std_A": 0.016818045863496313,
       "trial_SEM_A": 0.008409022931748156,
