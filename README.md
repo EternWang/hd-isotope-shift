@@ -2,6 +2,13 @@
 
 This repository documents a hydrogen-deuterium isotope-shift measurement carried out with a scanning monochromator and photomultiplier readout. The focus here is the analysis workflow: repeated measurements, calibration-aware uncertainty propagation, and comparison with reduced-mass theory.
 
+## Portfolio signal
+
+This repository shows careful treatment of repeated measurements, calibration terms,
+and sensitivity to window choices in raw-scan fitting. I keep both the table
+recomputation script and the optional raw-fit script visible so reviewers can
+distinguish stable reported results from more assumption-sensitive exploratory fits.
+
 Authors: Hongyu Wang, Cici Zhang  
 Advisor: Philip Lubin, Department of Physics, UC Santa Barbara
 
