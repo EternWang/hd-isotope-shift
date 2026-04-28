@@ -20,9 +20,13 @@ distinguishes stable reported results from more assumption-sensitive exploratory
 
 The repository separates stable reported results from more assumption-sensitive
 exploratory fits, so readers can see which outputs are used for the main conclusion.
+Beyond the spectroscopy result, it is structured as a compact empirical replication
+package: repeated measurements, calibration terms, window choices, comparison tables,
+and figures are linked through rerunnable code.
 
 Authors: Hongyu Wang, Cici Zhang  
 Advisor: Philip Lubin, Department of Physics, UC Santa Barbara
+Code and reproducible analysis pipeline maintained by Hongyu Wang.
 
 ## Day 4 summary
 
@@ -34,6 +38,10 @@ The final results come from the Day 4 new-lamp dataset, where four repeated scan
 | H beta | 1.263 | 0.039 | 1.3228 | -4.52% |
 
 `H alpha` is close to the theoretical value within the quoted total uncertainty. `H beta` shows the larger deviation and is the more calibration-sensitive result in this dataset.
+The `H beta` deviation exceeds the quoted total uncertainty, which the report treats as
+evidence of additional calibration and fit-window sensitivity for the more diffuse,
+overlapping line. The raw-fit helper keeps the window choices explicit in
+`analysis/windows.json` rather than hiding them inside the fitting code.
 
 ## Analysis figures
 
@@ -63,6 +71,18 @@ The raw-scan fitting helper [analysis/fit_from_raw.py](analysis/fit_from_raw.py)
 python -m venv .venv
 pip install -r analysis/requirements.txt
 python analysis/recompute_tables_day4.py
+```
+
+If `make` is available:
+
+```bash
+make all
+```
+
+Smoke test:
+
+```bash
+python -m unittest discover -s tests
 ```
 
 Generated outputs:
