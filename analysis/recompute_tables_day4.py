@@ -17,6 +17,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.patches import FancyBboxPatch
 
 
 DAY4_TRIALS = {
@@ -78,6 +79,21 @@ def save_figure(fig: plt.Figure, path: Path) -> None:
     fig.tight_layout()
     fig.savefig(path, bbox_inches="tight", facecolor="white")
     plt.close(fig)
+
+
+def draw_card(ax: plt.Axes, x: float, y: float, w: float, h: float, title: str, body: str, color: str) -> None:
+    box = FancyBboxPatch(
+        (x, y),
+        w,
+        h,
+        boxstyle="round,pad=0.018,rounding_size=0.025",
+        facecolor="white",
+        edgecolor="#CBD5E1",
+        linewidth=1.0,
+    )
+    ax.add_patch(box)
+    ax.text(x + 0.035, y + h - 0.07, title, ha="left", va="top", fontsize=11, weight="bold", color=color)
+    ax.text(x + 0.035, y + h - 0.145, body, ha="left", va="top", fontsize=9.3, color="#172033", linespacing=1.25)
 
 
 def mean_sem(values: np.ndarray) -> tuple[float, float, float]:
@@ -169,6 +185,95 @@ def plot_uncertainty_breakdown(df_budget: pd.DataFrame) -> None:
     save_figure(fig, OUTDIR / "day4_uncertainty_breakdown.png")
 
 
+def plot_research_snapshot(df_compare: pd.DataFrame, df_budget: pd.DataFrame, summary: dict[str, object]) -> None:
+    set_plot_style()
+    fig = plt.figure(figsize=(11.2, 5.5), facecolor="white")
+    grid = fig.add_gridspec(2, 3, height_ratios=[0.92, 1.08], width_ratios=[1.0, 1.0, 1.08])
+
+    ax_cards = fig.add_subplot(grid[0, :])
+    ax_cards.axis("off")
+    ax_cards.set_xlim(0, 1)
+    ax_cards.set_ylim(0, 1)
+    fig.suptitle("H-D isotope-shift analysis", x=0.04, y=0.985, ha="left", fontsize=17, weight="bold", color="#172033")
+    fig.text(
+        0.04,
+        0.925,
+        "Repeated Balmer-line scans reduced to theory comparisons with explicit calibration and statistical terms.",
+        ha="left",
+        fontsize=10.5,
+        color=GRAY,
+    )
+
+    alpha = summary["outputs"]["Halpha"]
+    beta = summary["outputs"]["Hbeta"]
+    draw_card(
+        ax_cards,
+        0.02,
+        0.08,
+        0.28,
+        0.68,
+        "Repeated scans",
+        "4 H-alpha trials\n4 H-beta trials\nDay 4 new-lamp dataset",
+        BLUE,
+    )
+    draw_card(
+        ax_cards,
+        0.36,
+        0.08,
+        0.28,
+        0.68,
+        "Reported shifts",
+        f"H alpha {alpha['final_reported_A']:.3f} +/- {alpha['final_reported_total_A']:.3f} A\n"
+        f"H beta {beta['final_reported_A']:.3f} +/- {beta['final_reported_total_A']:.3f} A\n"
+        "compared with reduced-mass theory",
+        ORANGE,
+    )
+    draw_card(
+        ax_cards,
+        0.70,
+        0.08,
+        0.28,
+        0.68,
+        "Uncertainty model",
+        "sample SEM + calibration term\nquadrature total\nraw-fit windows kept explicit",
+        GREEN,
+    )
+
+    ax_compare = fig.add_subplot(grid[1, :2])
+    labels = df_compare["Line"].tolist()
+    y = np.arange(len(labels))
+    exp_values = df_compare["Delta_lambda_exp_A"].to_numpy(dtype=float)
+    exp_sigma = df_compare["Sigma_total_A"].to_numpy(dtype=float)
+    theory_values = df_compare["Delta_lambda_th_A"].to_numpy(dtype=float)
+    ax_compare.errorbar(exp_values, y, xerr=exp_sigma, fmt="o", color=BLUE, ecolor="#7FA7C7", capsize=5, ms=8, label="experiment")
+    ax_compare.scatter(theory_values, y, marker="s", s=56, color=ORANGE, label="theory", zorder=3)
+    ax_compare.set_yticks(y, labels)
+    ax_compare.set_xlabel("Isotope shift (A)")
+    ax_compare.set_title("Experimental shifts vs theory", weight="bold", loc="left")
+    ax_compare.set_xlim(1.18, 1.88)
+    for idx, pct in enumerate(df_compare["Percent_difference_%"].to_numpy(dtype=float)):
+        ax_compare.text(max(exp_values[idx] + exp_sigma[idx], theory_values[idx]) + 0.015, y[idx], f"{pct:+.2f}%", va="center", color=GRAY, fontsize=9.5)
+    ax_compare.legend(loc="center right")
+
+    ax_budget = fig.add_subplot(grid[1, 2])
+    x = np.arange(len(labels))
+    width = 0.26
+    stat = df_budget["Statistical_SEM_A"].to_numpy(dtype=float)
+    cal = df_budget["Calibration_A"].to_numpy(dtype=float)
+    total = df_budget["Total_quadrature_A"].to_numpy(dtype=float)
+    ax_budget.bar(x - width, stat, width=width, color=BLUE, label="SEM")
+    ax_budget.bar(x, cal, width=width, color=ORANGE, label="cal.")
+    ax_budget.bar(x + width, total, width=width, color=GREEN, label="total")
+    ax_budget.set_xticks(x, labels)
+    ax_budget.set_ylabel("Uncertainty (A)")
+    ax_budget.set_title("Uncertainty budget", weight="bold", loc="left")
+    ax_budget.legend(loc="upper right", ncol=1)
+
+    fig.tight_layout(rect=[0.03, 0.02, 0.99, 0.9])
+    fig.savefig(OUTDIR / "research_snapshot.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
 def main() -> None:
     compare_rows: list[dict[str, float | str]] = []
     budget_rows: list[dict[str, float | str]] = []
@@ -231,6 +336,7 @@ def main() -> None:
 
     plot_shift_summary(df_compare)
     plot_uncertainty_breakdown(df_budget)
+    plot_research_snapshot(df_compare, df_budget, summary)
 
     print("Wrote:")
     print(" -", OUTDIR / "day4_tableII_compare.csv")
@@ -238,6 +344,7 @@ def main() -> None:
     print(" -", OUTDIR / "day4_summary.json")
     print(" -", OUTDIR / "day4_shift_summary.png")
     print(" -", OUTDIR / "day4_uncertainty_breakdown.png")
+    print(" -", OUTDIR / "research_snapshot.png")
 
 
 if __name__ == "__main__":

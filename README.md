@@ -2,7 +2,7 @@
 
 This repository documents a hydrogen-deuterium isotope-shift measurement carried out with a scanning monochromator and photomultiplier readout. The focus here is the analysis workflow: repeated measurements, calibration-aware uncertainty propagation, and comparison with reduced-mass theory.
 
-## What This Demonstrates
+## Project Overview
 
 This repository shows careful treatment of repeated measurements, calibration terms,
 and sensitivity to window choices in raw-scan fitting. I keep both the table
@@ -17,11 +17,15 @@ distinguishes stable reported results from more assumption-sensitive exploratory
   propagation, and sensitivity checks for raw fitting windows.
 - **Reproducibility signal:** the main script recomputes the stable Day 4 results,
   while the raw-fit helper keeps more assumption-sensitive choices separate and visible.
-- **Transferable skill:** the project shows how I separate validated results from
-  exploratory analyses, a useful habit for AI-assisted research and human validation.
+The repository separates stable reported results from more assumption-sensitive
+exploratory fits, so readers can see which outputs are used for the main conclusion.
 
 Authors: Hongyu Wang, Cici Zhang  
 Advisor: Philip Lubin, Department of Physics, UC Santa Barbara
+
+## Research snapshot
+
+<img src="results/research_snapshot.png" alt="H-D isotope-shift research snapshot" width="860">
 
 ## Day 4 summary
 
@@ -69,6 +73,7 @@ Generated outputs:
 - `results/day4_tableII_compare.csv`
 - `results/day4_tableIII_error_budget.csv`
 - `results/day4_summary.json`
+- `results/research_snapshot.png`
 - `results/day4_shift_summary.png`
 - `results/day4_uncertainty_breakdown.png`
 
