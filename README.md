@@ -23,10 +23,6 @@ exploratory fits, so readers can see which outputs are used for the main conclus
 Authors: Hongyu Wang, Cici Zhang  
 Advisor: Philip Lubin, Department of Physics, UC Santa Barbara
 
-## Research snapshot
-
-<img src="results/research_snapshot.png" alt="H-D isotope-shift research snapshot" width="860">
-
 ## Day 4 summary
 
 The final results come from the Day 4 new-lamp dataset, where four repeated scans were recorded for each Balmer line and combined with the quoted scan-rate calibration term.
@@ -73,7 +69,6 @@ Generated outputs:
 - `results/day4_tableII_compare.csv`
 - `results/day4_tableIII_error_budget.csv`
 - `results/day4_summary.json`
-- `results/research_snapshot.png`
 - `results/day4_shift_summary.png`
 - `results/day4_uncertainty_breakdown.png`
 
