@@ -38,11 +38,11 @@ The final results come from the Day 4 new-lamp dataset, where four repeated scan
 
 **Experimental shifts compared with theory**
 
-![Day 4 shift summary](results/day4_shift_summary.png)
+<img src="results/day4_shift_summary.png" alt="Day 4 isotope shift summary" width="760">
 
 **Statistical vs calibration uncertainty**
 
-![Day 4 uncertainty breakdown](results/day4_uncertainty_breakdown.png)
+<img src="results/day4_uncertainty_breakdown.png" alt="Day 4 uncertainty breakdown" width="760">
 
 ## Python analysis workflow
 

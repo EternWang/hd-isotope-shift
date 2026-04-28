@@ -46,6 +46,38 @@ LINE_LABELS = {
 
 OUTDIR = Path(__file__).resolve().parents[1] / "results"
 OUTDIR.mkdir(parents=True, exist_ok=True)
+BLUE = "#2F6B9A"
+ORANGE = "#D97935"
+GREEN = "#5B8C5A"
+RED = "#B4554B"
+GRAY = "#4A5568"
+LIGHT = "#EEF2F6"
+
+
+def set_plot_style() -> None:
+    plt.rcParams.update(
+        {
+            "figure.dpi": 140,
+            "savefig.dpi": 240,
+            "font.family": "DejaVu Sans",
+            "font.size": 10.5,
+            "axes.titlesize": 14,
+            "axes.labelsize": 11,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "axes.grid": True,
+            "grid.color": "#D9DEE7",
+            "grid.linewidth": 0.8,
+            "grid.alpha": 0.75,
+            "legend.frameon": False,
+        }
+    )
+
+
+def save_figure(fig: plt.Figure, path: Path) -> None:
+    fig.tight_layout()
+    fig.savefig(path, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
 
 
 def mean_sem(values: np.ndarray) -> tuple[float, float, float]:
@@ -61,6 +93,7 @@ def percent_diff(exp_value: float, theory_value: float) -> float:
 
 
 def plot_shift_summary(df_compare: pd.DataFrame) -> None:
+    set_plot_style()
     labels = df_compare["Line"].tolist()
     y = np.arange(len(labels))
     exp_values = df_compare["Delta_lambda_exp_A"].to_numpy(dtype=float)
@@ -68,41 +101,51 @@ def plot_shift_summary(df_compare: pd.DataFrame) -> None:
     theory_values = df_compare["Delta_lambda_th_A"].to_numpy(dtype=float)
     percent_offsets = df_compare["Percent_difference_%"].to_numpy(dtype=float)
 
-    plt.figure(figsize=(7.0, 3.8))
-    plt.errorbar(
+    fig, ax = plt.subplots(figsize=(7.4, 3.8))
+    ax.errorbar(
         exp_values,
         y,
         xerr=exp_sigma,
         fmt="o",
-        color="#1F77B4",
-        ecolor="#1F77B4",
-        capsize=4,
-        markersize=7,
+        color=BLUE,
+        ecolor="#7FA7C7",
+        capsize=5,
+        markersize=8,
         label="Experiment",
     )
-    plt.scatter(
+    ax.scatter(
         theory_values,
         y,
         marker="s",
         s=55,
-        color="#E45756",
+        color=ORANGE,
         label="Theory",
         zorder=3,
     )
     for idx, pct in enumerate(percent_offsets):
         x_text = max(exp_values[idx] + exp_sigma[idx], theory_values[idx]) + 0.01
-        plt.text(x_text, y[idx], f"{pct:+.2f}%", va="center", fontsize=9, color="#444444")
+        ax.text(x_text, y[idx], f"{pct:+.2f}%", va="center", fontsize=9.5, color=GRAY)
+        y_offset = 0.18 if idx == 0 else -0.22
+        ax.text(
+            exp_values[idx],
+            y[idx] + y_offset,
+            f"{exp_values[idx]:.3f} +/- {exp_sigma[idx]:.3f}",
+            ha="center",
+            fontsize=9,
+            color=BLUE,
+        )
 
-    plt.yticks(y, labels)
-    plt.xlabel("Isotope shift Delta lambda (A)")
-    plt.title("Day 4 hydrogen-deuterium isotope shifts")
-    plt.legend(loc="best")
-    plt.tight_layout()
-    plt.savefig(OUTDIR / "day4_shift_summary.png", dpi=200)
-    plt.close()
+    ax.set_yticks(y, labels)
+    ax.set_xlabel("Isotope shift Delta lambda (Angstrom)")
+    ax.set_title("Day 4 H-D isotope shifts vs reduced-mass theory")
+    ax.set_xlim(1.18, 1.88)
+    ax.set_ylim(-0.55, 1.55)
+    ax.legend(loc="center right")
+    save_figure(fig, OUTDIR / "day4_shift_summary.png")
 
 
 def plot_uncertainty_breakdown(df_budget: pd.DataFrame) -> None:
+    set_plot_style()
     labels = df_budget["Line"].tolist()
     x = np.arange(len(labels))
     width = 0.24
@@ -111,17 +154,19 @@ def plot_uncertainty_breakdown(df_budget: pd.DataFrame) -> None:
     cal = df_budget["Calibration_A"].to_numpy(dtype=float)
     total = df_budget["Total_quadrature_A"].to_numpy(dtype=float)
 
-    plt.figure(figsize=(7.0, 3.8))
-    plt.bar(x - width, stat, width=width, color="#4C78A8", label="Statistical SEM")
-    plt.bar(x, cal, width=width, color="#F58518", label="Calibration term")
-    plt.bar(x + width, total, width=width, color="#54A24B", label="Total quadrature")
-    plt.xticks(x, labels)
-    plt.ylabel("Uncertainty contribution (A)")
-    plt.title("Day 4 uncertainty budget")
-    plt.legend(loc="upper left")
-    plt.tight_layout()
-    plt.savefig(OUTDIR / "day4_uncertainty_breakdown.png", dpi=200)
-    plt.close()
+    fig, ax = plt.subplots(figsize=(7.2, 3.9))
+    bars_stat = ax.bar(x - width, stat, width=width, color=BLUE, label="Statistical SEM")
+    bars_cal = ax.bar(x, cal, width=width, color=ORANGE, label="Calibration term")
+    bars_total = ax.bar(x + width, total, width=width, color=GREEN, label="Total quadrature")
+    ax.set_xticks(x, labels)
+    ax.set_ylabel("Uncertainty contribution (Angstrom)")
+    ax.set_title("Calibration dominates the Day 4 uncertainty budget")
+    ax.legend(loc="upper right")
+    for bars in (bars_stat, bars_cal, bars_total):
+        for bar in bars:
+            value = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2, value + 0.0015, f"{value:.3f}", ha="center", va="bottom", fontsize=8.5)
+    save_figure(fig, OUTDIR / "day4_uncertainty_breakdown.png")
 
 
 def main() -> None:
