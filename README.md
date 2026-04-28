@@ -2,14 +2,14 @@
 
 This repository documents a hydrogen-deuterium isotope-shift measurement carried out with a scanning monochromator and photomultiplier readout. The focus here is the analysis workflow: repeated measurements, calibration-aware uncertainty propagation, and comparison with reduced-mass theory.
 
-## Research Portfolio Signal
+## What This Demonstrates
 
 This repository shows careful treatment of repeated measurements, calibration terms,
 and sensitivity to window choices in raw-scan fitting. I keep both the table
-recomputation script and the optional raw-fit script visible so reviewers can
-distinguish stable reported results from more assumption-sensitive exploratory fits.
+recomputation script and the optional raw-fit script visible so the repository
+distinguishes stable reported results from more assumption-sensitive exploratory fits.
 
-## Reviewer Quick Scan
+## At a Glance
 
 - **Data workflow:** repeated H-D scans and calibration records are reduced into
   comparison tables, uncertainty budgets, JSON summaries, and diagnostic figures.
