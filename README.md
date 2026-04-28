@@ -17,6 +17,7 @@ distinguishes stable reported results from more assumption-sensitive exploratory
   propagation, and sensitivity checks for raw fitting windows.
 - **Reproducibility signal:** the main script recomputes the stable Day 4 results,
   while the raw-fit helper keeps more assumption-sensitive choices separate and visible.
+
 The repository separates stable reported results from more assumption-sensitive
 exploratory fits, so readers can see which outputs are used for the main conclusion.
 
