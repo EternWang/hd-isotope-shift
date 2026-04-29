@@ -147,25 +147,45 @@ def plot_shift_summary(df_compare: pd.DataFrame) -> None:
 def plot_uncertainty_breakdown(df_budget: pd.DataFrame) -> None:
     set_plot_style()
     labels = df_budget["Line"].tolist()
-    x = np.arange(len(labels))
-    width = 0.24
-
     stat = df_budget["Statistical_SEM_A"].to_numpy(dtype=float)
     cal = df_budget["Calibration_A"].to_numpy(dtype=float)
     total = df_budget["Total_quadrature_A"].to_numpy(dtype=float)
 
-    fig, ax = plt.subplots(figsize=(7.2, 3.9))
-    bars_stat = ax.bar(x - width, stat, width=width, color=BLUE, label="Statistical SEM")
-    bars_cal = ax.bar(x, cal, width=width, color=ORANGE, label="Calibration term")
-    bars_total = ax.bar(x + width, total, width=width, color=GREEN, label="Total quadrature")
-    ax.set_xticks(x, labels)
-    ax.set_ylabel("Uncertainty contribution (Angstrom)")
-    ax.set_title("Calibration dominates the Day 4 uncertainty budget")
-    ax.legend(loc="upper right")
-    for bars in (bars_stat, bars_cal, bars_total):
-        for bar in bars:
-            value = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width() / 2, value + 0.0015, f"{value:.3f}", ha="center", va="bottom", fontsize=8.5)
+    rows: list[tuple[str, float, str]] = []
+    for line_label, stat_value, cal_value, total_value in zip(labels, stat, cal, total):
+        rows.extend(
+            [
+                (f"{line_label} | Statistical SEM", stat_value, BLUE),
+                (f"{line_label} | Calibration term", cal_value, ORANGE),
+                (f"{line_label} | Total quadrature", total_value, GREEN),
+            ]
+        )
+
+    row_labels = [row[0] for row in rows]
+    values = np.array([row[1] for row in rows], dtype=float)
+    colors = [row[2] for row in rows]
+    y = np.arange(len(rows))[::-1]
+
+    fig, ax = plt.subplots(figsize=(7.8, 4.4))
+    bars = ax.barh(y, values, color=colors, height=0.58)
+    ax.set_yticks(y, row_labels)
+    ax.set_xlabel("Uncertainty contribution (Angstrom)")
+    ax.set_title("Day 4 uncertainty budget: calibration dominates", loc="left", pad=12)
+    ax.set_xlim(0, max(values) + 0.012)
+    ax.grid(axis="x")
+    ax.grid(axis="y", visible=False)
+    ax.tick_params(axis="y", labelsize=8.5)
+
+    for bar, value in zip(bars, values):
+        ax.text(
+            value + 0.0012,
+            bar.get_y() + bar.get_height() / 2,
+            f"{value:.3f}",
+            ha="left",
+            va="center",
+            fontsize=8.5,
+            color="#1F2937",
+        )
     save_figure(fig, OUTDIR / "day4_uncertainty_breakdown.png")
 
 
