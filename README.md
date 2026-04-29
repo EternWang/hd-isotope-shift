@@ -28,6 +28,24 @@ Authors: Hongyu Wang, Cici Zhang
 Advisor: Philip Lubin, Department of Physics, UC Santa Barbara
 Code and reproducible analysis pipeline maintained by Hongyu Wang.
 
+## Sensitivity-Aware Design
+
+Raw H-D doublet fits are sensitive to the chosen time window for each spectral line.
+Rather than embedding those choices inside the fitting code, this repository
+externalizes them to `analysis/windows.json`, so the assumptions are explicit,
+version-controlled, and easy to audit.
+
+The repo separates stable reported values from more assumption-sensitive exploratory
+fits:
+
+- `analysis/recompute_tables_day4.py` regenerates the Day 4 values used in the report.
+- `analysis/fit_from_raw.py` supports raw-scan refits for diagnostic checks.
+- `analysis/windows.json` records the fit-window choices used by the raw-scan helper.
+
+This structure makes the analysis closer to a small specification-audit package: a
+reader can see which results are treated as reported values, which results depend on
+extra modeling choices, and where those choices live.
+
 ## Day 4 summary
 
 The final results come from the Day 4 new-lamp dataset, where four repeated scans were recorded for each Balmer line and combined with the quoted scan-rate calibration term.
